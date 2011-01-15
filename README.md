@@ -1,4 +1,4 @@
-# JasmineCoffee
+# Instant Jasmine Coffee
 
 *A [CoffeeScript](http://jashkenas.github.com/coffee-script/ "CoffeeScript") skeleton project for test-driving with [Jasmine BDD](http://pivotal.github.com/jasmine/ "Jasmine: BDD for Javascript | Jasmine")*
 
