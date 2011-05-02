@@ -112,7 +112,9 @@ task 'uglify', 'Minify and obfuscate', ->
         fs.writeFile prodTargetJsMinFile, final_code
         fs.unlink prodTargetJsFile, (err) -> handleError(err) if err
         
-        growlMessage "Uglified #{prodTargetJsMinFile}"
+        message = "Uglified #{prodTargetJsMinFile}"
+        util.log message
+        growlMessage message
 
 task 'dist', 'Prepare distribution for deployment', (options) ->
     dir = options.dist or distDir
