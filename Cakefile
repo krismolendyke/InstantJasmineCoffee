@@ -1,15 +1,16 @@
 fs     = require 'fs'
 {exec} = require 'child_process'
 util   = require 'util'
-uglify = require 'uglify-js'
+uglify = require './node_modules/uglify-js'
+growl  = require './node_modules/growl'
 
-prodSrcCoffeeDir     = 'prod/src/coffee-script'
+prodSrcCoffeeDir     = 'production/src/coffee-script'
 testSrcCoffeeDir     = 'test/src/coffee-script'
 
-prodTargetJsDir      = 'js'
+prodTargetJsDir      = 'production/src/js'
 testTargetJsDir      = 'test/src/js'
 
-prodTargetFileName   = 'fcktrffc'
+prodTargetFileName   = 'app'
 prodTargetCoffeeFile = "#{prodSrcCoffeeDir}/#{prodTargetFileName}.coffee"
 prodTargetJsFile     = "#{prodTargetJsDir}/#{prodTargetFileName}.js"
 prodTargetJsMinFile  = "#{prodTargetJsDir}/#{prodTargetFileName}.min.js"
@@ -26,12 +27,11 @@ prodCoffeeFiles = [
 distDir = "dist"
 distFiles = [
     "index.html"
-    "css"
-    "img"
     "js"
 ]
 
-option '-d', '--dist [DIR]', 'set the distribution directory'
+option '-d', '--dist [DIR]'
+    , '# Override distribution directory (default: ./dist)'
 
 task 'watch:all', 'Watch production and test CoffeeScript', ->
     invoke 'watch:test'
@@ -77,31 +77,10 @@ task 'build', 'Build a single JavaScript file from prod files', ->
                 handleError(err) if err
                 message = "Compiled #{prodTargetJsFile}"
                 util.log message
-                growl message
+                growlMessage message
                 fs.unlink prodTargetCoffeeFile, (err) -> handleError(err) if err
                 invoke 'uglify'                
 
-task 'uglify', 'Minify and obfuscate', ->
-    jsp = uglify.parser
-    pro = uglify.uglify
-
-    fs.readFile prodTargetJsFile, 'utf8', (err, fileContents) ->
-        ast = jsp.parse fileContents  # parse code and get the initial AST
-        ast = pro.ast_mangle ast # get a new AST with mangled names
-        ast = pro.ast_squeeze ast # get an AST with compression optimizations
-        final_code = pro.gen_code ast # compressed code here
-    
-        fs.writeFile prodTargetJsMinFile, final_code
-        fs.unlink prodTargetJsFile, (err) -> handleError(err) if err
-        
-        growl "Uglified #{prodTargetJsMinFile}"
-
-task 'dist', 'Prepare distribution for deployment', (options) ->
-    dir = options.dist or distDir
-    fs.mkdir dir, '755'
-    for file, index in distFiles then do (file, index) ->
-        fs.link file, "#{dir}/#{file}"
-    
 task 'watch:test', 'Watch test specs and build changes', ->
     invoke 'build:test'
     util.log "Watching for changes in #{testSrcCoffeeDir}"
@@ -120,19 +99,40 @@ task 'build:test', 'Build individual test specs', ->
         for file in files then do (file) -> 
             coffee testCoffeeOpts, "#{testSrcCoffeeDir}/#{file}"
 
+task 'uglify', 'Minify and obfuscate', ->
+    jsp = uglify.parser
+    pro = uglify.uglify
+
+    fs.readFile prodTargetJsFile, 'utf8', (err, fileContents) ->
+        ast = jsp.parse fileContents  # parse code and get the initial AST
+        ast = pro.ast_mangle ast # get a new AST with mangled names
+        ast = pro.ast_squeeze ast # get an AST with compression optimizations
+        final_code = pro.gen_code ast # compressed code here
+    
+        fs.writeFile prodTargetJsMinFile, final_code
+        fs.unlink prodTargetJsFile, (err) -> handleError(err) if err
+        
+        growlMessage "Uglified #{prodTargetJsMinFile}"
+
+task 'dist', 'Prepare distribution for deployment', (options) ->
+    dir = options.dist or distDir
+    fs.mkdir dir, '755'
+    for file, index in distFiles then do (file, index) ->
+        fs.link file, "#{dir}/#{file}"
+    
 coffee = (options = "", file) ->
     util.log "Compiling #{file}"
     exec "coffee #{options} --compile #{file}", (err, stdout, stderr) -> 
         handleError(err) if err
-        growl "Compiled #{file}"
+        growlMessage "Compiled #{file}"
 
 handleError = (error) -> 
     util.log error
-    growl error
+    growlMessage error
         
-growl = (message = "") -> 
+growlMessage = (message = '') -> 
     options = {
         title: 'CoffeeScript'
-        image: '/Users/kris/Desktop/Dropbox/Icons/CoffeeScript.png'
+        image: 'lib/CoffeeScript.png'
     }
-    try require('growl').notify message, options
+    growl.notify message, options
