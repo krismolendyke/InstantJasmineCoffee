@@ -27,5 +27,5 @@ for a few short descriptions.
 
 I've written a couple of posts about this skeleton project where you can learn more about why and how you can make use of it.
 
-* [new post]
+* [A Piece of Cakefile: Simplifying Large CoffeeScript Project Builds With Cake](http://goo.gl/IzdqI)
 * [Flavored Coffee: Test Driving Client-side Development with Jasmine &amp; CoffeeScript](http://goo.gl/aeCV5 "Flavored Coffee: Test Driving Client-side Development with Jasmine &amp; CoffeeScript | Visibiz")
