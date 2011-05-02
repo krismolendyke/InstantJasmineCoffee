@@ -24,15 +24,6 @@ prodCoffeeFiles = [
     'outro'
 ]
 
-distDir = "dist"
-distFiles = [
-    "index.html"
-    "js"
-]
-
-option '-d', '--dist [DIR]'
-    , '# Override distribution directory (default: ./dist)'
-
 task 'watch:all', 'Watch production and test CoffeeScript', ->
     invoke 'watch:test'
     invoke 'watch'
@@ -115,12 +106,6 @@ task 'uglify', 'Minify and obfuscate', ->
         message = "Uglified #{prodTargetJsMinFile}"
         util.log message
         growlMessage message
-
-task 'dist', 'Prepare distribution for deployment', (options) ->
-    dir = options.dist or distDir
-    fs.mkdir dir, '755'
-    for file, index in distFiles then do (file, index) ->
-        fs.link file, "#{dir}/#{file}"
     
 coffee = (options = "", file) ->
     util.log "Compiling #{file}"
