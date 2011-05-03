@@ -2,7 +2,6 @@ fs     = require 'fs'
 {exec} = require 'child_process'
 util   = require 'util'
 uglify = require './node_modules/uglify-js'
-growl  = require './node_modules/growl'
 
 prodSrcCoffeeDir     = 'production/src/coffee-script'
 testSrcCoffeeDir     = 'test/src/coffee-script'
@@ -68,7 +67,7 @@ task 'build', 'Build a single JavaScript file from prod files', ->
                 handleError(err) if err
                 message = "Compiled #{prodTargetJsFile}"
                 util.log message
-                growlMessage message
+                displayNotification message
                 fs.unlink prodTargetCoffeeFile, (err) -> handleError(err) if err
                 invoke 'uglify'                
 
@@ -105,21 +104,21 @@ task 'uglify', 'Minify and obfuscate', ->
         
         message = "Uglified #{prodTargetJsMinFile}"
         util.log message
-        growlMessage message
+        displayNotification message
     
 coffee = (options = "", file) ->
     util.log "Compiling #{file}"
     exec "coffee #{options} --compile #{file}", (err, stdout, stderr) -> 
         handleError(err) if err
-        growlMessage "Compiled #{file}"
+        displayNotification "Compiled #{file}"
 
 handleError = (error) -> 
     util.log error
-    growlMessage error
+    displayNotification error
         
-growlMessage = (message = '') -> 
+displayNotification = (message = '') -> 
     options = {
         title: 'CoffeeScript'
         image: 'lib/CoffeeScript.png'
     }
-    growl.notify message, options
+    try require('./node_modules/growl').notify message, options

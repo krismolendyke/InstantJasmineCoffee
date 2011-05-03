@@ -9,7 +9,7 @@ Based on the change to module management in [`npm` v1.0+](http://blog.nodejs.org
 * [uglify-js](https://github.com/mishoo/UglifyJS)
 * [growl](https://github.com/visionmedia/node-growl), which requires [growlnotify](http://growl.info/extras.php#growlnotify "Growl - Extras") to be available on your `PATH`
 
-You shouldn't have to install them with `npm`.  If it's annoying to require Growl, it's simple to remove.  I think it's a useful task for OS X users and other OS variants probably have similar node modules for hooking into other native notification systems.
+You shouldn't have to install them with `npm`.  If you're not running OS X, or don't have Growl available, you obviously won't see any pretty notifications.  But it should be trivial to replace that function with your OS specific variant if you'd like to.
 
 ## Usage
 
