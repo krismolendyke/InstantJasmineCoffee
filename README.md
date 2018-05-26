@@ -1,6 +1,6 @@
 # Instant Jasmine Coffee
 
-*A [CoffeeScript](http://jashkenas.github.com/coffee-script/ "CoffeeScript") skeleton project for test-driving with [Jasmine BDD](http://pivotal.github.com/jasmine/ "Jasmine: BDD for Javascript | Jasmine")*
+*A [CoffeeScript](http://jashkenas.github.com/coffee-script/ "CoffeeScript") skeleton project for test-driving with [Jasmine BDD](https://jasmine.github.io/ "Jasmine: BDD for Javascript | Jasmine")*
 
 ## Requirements
 Based on the change to module management in [`npm` v1.0+](http://blog.nodejs.org/2011/03/23/npm-1-0-global-vs-local-installation/ "npm 1.0: Global vs Local installation &laquo; node blog"), the following modules are now local to this project:
